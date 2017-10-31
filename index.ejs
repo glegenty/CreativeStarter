@@ -7,7 +7,13 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Creative Starter</h1>
+    <div class="player-controls">
+        <audio id="player" controls></audio>
+        <form action="">
+            <input id='url-input' type="text">
+            <button type="button" id="submit-url">Submit</button>
+        </form>
+    </div>
     <div id="WebGL-output">
     </div>
     <%=htmlWebpackPlugin.files.webpackManifest%>
