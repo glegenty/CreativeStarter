@@ -1,7 +1,19 @@
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 const dev = process.env.NODE_ENV === 'dev'
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const path = require('path')
 
+exports.PATH = {
+  src: path.join(__dirname, 'src'),
+  dist: path.join(__dirname, 'dist'),
+  fonts: path.join(__dirname, 'static/fonts'),
+  alias: {
+    shaders: path.join(__dirname, 'src/shaders'),
+    components: path.join(__dirname, 'src/components'),
+    styl: path.join(__dirname, 'src/styl'),
+    lib: path.join(__dirname, 'src/lib')
+  }
+}
 
 exports.devServer = ({host, port} = {}) => ({
   plugins: [
@@ -12,7 +24,7 @@ exports.devServer = ({host, port} = {}) => ({
       port: 3000,
       server: { baseDir: ['dist'] }
     })]
-});
+})
 
 const devParameters = {
   sourceMap: true,
@@ -54,15 +66,15 @@ exports.loadCSS = ({ include, exclude } = {}) => ({
       },
       {
         test: /\.styl$/,
-        use: ['style-loader',...commonCssLoaders, 'stylus-loader']
-      }      
+        use: ['style-loader', ...commonCssLoaders, 'stylus-loader']
+      }
     ]
   }
 })
 
 exports.extractCSS = () => ({
   module: {
-    rules : [
+    rules: [
       {
         test: /\.css$/,
         use: ExtractTextPlugin.extract({
@@ -81,7 +93,18 @@ exports.extractCSS = () => ({
   }
 })
 
-exports.loadImages = ({include, exclude, options} = {}) => ({
+exports.loadShaders = () => ({
+  module: {
+    rules: [
+      {
+        test: /\.(glsl|fs|vs|frag|vert)$/,
+        loader: 'webpack-glsl-loader'
+      }
+    ]
+  }
+})
+
+exports.loadImages = ({include, exclude, options, dev} = {}) => ({
   module: {
     rules: [
       {
@@ -89,12 +112,31 @@ exports.loadImages = ({include, exclude, options} = {}) => ({
         include,
         exclude,
         use: {
-          loader: 'url-loader',
-          options
+          loader: 'file-loader',
+          options: {
+            name: '[path][name].[ext]'
+          }
         }
       }
     ]
   }
 })
 
-exports.loadFont
+exports.loadFonts = ({include, exclude, options} = {}) => ({
+  module: {
+    rules: [
+      {
+        test: /\.(ttf|eot|woff|woff2)$/,
+        include: path.join(__dirname, 'static/fonts'),
+        exclude,
+        loader: 'file-loader?name=[name].[ext]&outputPath=fonts/&publicPath=../'
+        // loader: 'file-loader',
+        // options: {
+        //   name: '[path][name].[ext]',
+        //   outputPath: 'static/fonts/',
+        //   publicPath: '../'
+        // }
+      }
+    ]
+  }
+})
