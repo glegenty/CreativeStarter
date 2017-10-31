@@ -23,5 +23,5 @@ function loadTracks (tracksURL) {
 
 function tick (dt = 0) {
   // visualizer.update(audio)
-  scene.render()
+  scene.render(audio.frequency())
 }

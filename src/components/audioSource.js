@@ -2,7 +2,7 @@
 export default function (player) {
   const ctx = new (window.AudioContext || window.webkitAudioContext)()
   const analyser = ctx.createAnalyser()
-  analyser.fftSize = 2048
+  analyser.fftSize = 256
   const source = ctx.createMediaElementSource(player)
   const gainDb = -40.0
   const bandSplit = [360, 3600]
@@ -22,13 +22,13 @@ export default function (player) {
   lBand.frequency.value = bandSplit[1]
   lBand.gain.value = gainDb
 
-  source.connect(lBand)
-  source.connect(hBand)
+  // source.connect(lBand)
+  // source.connect(hBand)
   return {
     init (player) {
     },
     frequency () {
-      analyser.getByteTimeDomainData(dataArray)
+      analyser.getByteFrequencyData(dataArray)
       return dataArray
     }
   }
